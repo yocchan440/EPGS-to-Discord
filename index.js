@@ -16,6 +16,9 @@ const _date = new Date(Number(process.env.STARTAT)).toLocaleDateString("japanese
 const _startAt = new Date(Number(process.env.STARTAT)).toLocaleTimeString("japanese")
 const _endAt = new Date(Number(process.env.ENDAT)).toLocaleTimeString("japanese")
 const _Path = process.env.RECPATH // 録画ファイルの保存フォルダを指定
+// ポート番号を変更しやすいように
+const epgs_port = 8888
+const mirakurun_port = 40772 
 
 // コンフィグファイルの読み込み
 var _config;
@@ -32,13 +35,13 @@ const webhook = new Discord.WebhookClient(webhookURL[5],webhookURL[6]) //Discord
 
 var getRecorded = (recordedId, callback)=>{
     // 録画IDを用いてEPGStation API経由で録画番組情報を取得する
-    request.get(_hostName+":8888/api/recorded/"+recordedId, (err, res, body)=>{
+    request.get(_hostName+":"+epgs_port+"/api/recorded/"+recordedId, (err, res, body)=>{
         !err ? callback(body): callback(err)
     })
 }
 var getProgram = (programlId, callback)=>{
     // 番組IDを用いてMirakurun API経由で番組情報を取得する
-    request.get(_hostName+":40772/api/programs/"+programlId, (err, res, body)=>{
+    request.get(_hostName+":"+mirakurun_port+"/api/programs/"+programlId, (err, res, body)=>{
         !err ? callback(body): callback(err)
     })
 }
