@@ -35,7 +35,7 @@ const webhook = new Discord.WebhookClient(webhookURL[5],webhookURL[6]) //Discord
 
 var getRecorded = (recordedId, callback)=>{
     // 録画IDを用いてEPGStation API経由で録画番組情報を取得する
-    request.get(_hostName+":"+epgs_port+"/api/recorded/"+recordedId, (err, res, body)=>{
+    request.get(_hostName+":"+epgs_port+"/api/recorded/"+recordedId+'?isHalfWidth=false', (err, res, body)=>{
         !err ? callback(body): callback(err)
     })
 }
@@ -50,7 +50,7 @@ var dropCheck = (callback)=>{
     let recInfo = getRecorded(_recordedid, (json)=>{
         json = JSON.parse(json)
         try{
-            callback(json.errorCnt, json.dropCnt, json.scramblingCnt)
+            callback(json.dropLog.errorCnt, json.dropLog.dropCnt, json.dropLog.scramblingCnt)
         } catch(e) {
             callback(-1, -1 ,-1)
         }
@@ -63,7 +63,7 @@ var postMessage = (message)=>{
 
 if(process.argv[2] === 'start'){
     // 録画開始時に投稿するメッセージ
-    postMessage(':arrow_forward: __**'+_title+'**__\n```'+_startAt+'～'+_endAt+'［'+_channel+'］```')
+    postMessage(':record_button: __**'+_title+'**__\n```'+_startAt+'～'+_endAt+'［'+_channel+'］```')
 }
 else if(process.argv[2] === 'end'){
     // 録画終了時に投稿するメッセージ
